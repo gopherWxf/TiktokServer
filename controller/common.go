@@ -113,7 +113,7 @@ type FavoriteListRequest struct {
 
 //comment action
 type CommentActionResponse struct {
-	Status
+	Status //状态相关
 }
 type CommentActionRequest struct {
 	IdAndToken
@@ -136,8 +136,8 @@ type CommentListResponse struct {
 	CommentList []Comment `json:"comment_list"` //评论列表
 }
 type CommentListRequest struct {
-	IdAndToken
-	VideoId int64 `json:"video_id"` //视频id
+	IdAndToken       //id and token
+	VideoId    int64 `json:"video_id"` //视频id
 }
 
 /*
@@ -146,28 +146,28 @@ type CommentListRequest struct {
 
 //relation action request
 type RelationActionResponse struct {
-	Status
+	Status //状态相关
 }
 type RelationActionRequest struct {
-	IdAndToken
+	IdAndToken       //id and token
 	ToUserId   int64 `json:"to_user_id"`  //对方用户id
 	ActionType int32 `json:"action_type"` //1-关注，2-取消关注
 }
 
 //relation follow list
 type RelationFollowListResponse struct {
-	Status
+	Status          //状态相关
 	UserList []User `json:"user_list"` //用户信息列表
 }
 type RelationFollowListRequest struct {
-	IdAndToken
+	IdAndToken //id and token
 }
 
 //relation follower list
 type RelationFollowerListResponse struct {
-	Status
+	Status          //状态相关
 	UserList []User `json:"user_list"` //用户信息列表
 }
 type RelationFollowerListRequest struct {
-	IdAndToken
+	IdAndToken //id and token
 }
