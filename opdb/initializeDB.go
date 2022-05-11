@@ -54,8 +54,22 @@ func InitMySqlConn() (err error) {
 	//检测数据库是否活跃
 	return DB.DB().Ping()
 }
+
+//如果表不存在,通过传入的结构体建表
 func InitModel() {
-	//表--->如果没有则自动创建，如果有则添加该结构体新的字段
-	//TODO 明天去设计表
-	//DB.AutoMigrate(&User{}) //如果表不存在,通过User这个结构体建表
+	DB.AutoMigrate(&UserInfo{})
+	DB.AutoMigrate(&Video{})
+	DB.AutoMigrate(&Favorite{})
+	DB.AutoMigrate(&Comment{})
+	DB.AutoMigrate(&Relation{})
+	DB.Model(&Video{}).AddForeignKey("fk_vi_userinfo_id", "user_infos(id)", "RESTRICT", "RESTRICT")
+
+	DB.Model(&Favorite{}).AddForeignKey("user_info_id", "user_infos(id)", "RESTRICT", "RESTRICT")
+	DB.Model(&Favorite{}).AddForeignKey("video_id", "videos(id)", "RESTRICT", "RESTRICT")
+
+	DB.Model(&Comment{}).AddForeignKey("user_info_id", "user_infos(id)", "RESTRICT", "RESTRICT")
+	DB.Model(&Comment{}).AddForeignKey("video_id", "videos(id)", "RESTRICT", "RESTRICT")
+
+	DB.Model(&Relation{}).AddForeignKey("user_info_id", "user_infos(id)", "RESTRICT", "RESTRICT")
+	DB.Model(&Relation{}).AddForeignKey("user_info_to_id", "user_infos(id)", "RESTRICT", "RESTRICT")
 }
