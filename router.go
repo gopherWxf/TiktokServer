@@ -2,12 +2,21 @@ package main
 
 import (
 	"TiktokServer/controller"
+	"TiktokServer/middleware"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func initRouter(r *gin.Engine) {
+	r.Static("/static", "./public")
+
 	apiRouter := r.Group("/douyin")
 	{
+		//test
+		apiRouter.GET("/", func(c *gin.Context) {
+			c.JSON(http.StatusOK, "666")
+		})
+
 		/*
 			basic apis
 		*/
@@ -18,7 +27,7 @@ func initRouter(r *gin.Engine) {
 		//通过用户名和密码进行登录，登录成功后返回用户 id 和权限 token
 		apiRouter.POST("/user/login/", controller.Login)
 	}
-	//apiRouter.Use(jwt)
+	apiRouter.Use(middleware.JWTAuth)
 	{
 		//获取登录用户的 id、昵称，如果实现社交部分的功能，还会返回关注数和粉丝数
 		apiRouter.GET("/user/", controller.UserInfo)
@@ -30,23 +39,23 @@ func initRouter(r *gin.Engine) {
 		/*
 			extra apis - I
 		*/
-		//登录用户对视频的点赞和取消点赞操作
-		apiRouter.POST("/favorite/action/", controller.FavoriteAction)
-		//登录用户的所有点赞视频
-		apiRouter.GET("/favorite/list/", controller.FavoriteList)
-		//登录用户对视频进行评论
-		apiRouter.POST("/comment/action/", controller.CommentAction)
-		//查看视频的所有评论，按发布时间倒序
-		apiRouter.GET("/comment/list/", controller.CommentList)
-
-		/*
-			extra apis - II
-		*/
-		//登陆用户对其他用户进行关注或取消关注
-		apiRouter.POST("/relation/action/", controller.RelationAction)
-		//登陆用户关注的所有用户列表
-		apiRouter.GET("/relation/follow/list/", controller.FollowList)
-		//所有关注登录用户的粉丝列表
-		apiRouter.GET("/relation/follower/list/", controller.FollowerList)
+		////登录用户对视频的点赞和取消点赞操作
+		//apiRouter.POST("/favorite/action/", controller.FavoriteAction)
+		////登录用户的所有点赞视频
+		//apiRouter.GET("/favorite/list/", controller.FavoriteList)
+		////登录用户对视频进行评论
+		//apiRouter.POST("/comment/action/", controller.CommentAction)
+		////查看视频的所有评论，按发布时间倒序
+		//apiRouter.GET("/comment/list/", controller.CommentList)
+		//
+		///*
+		//	extra apis - II
+		//*/
+		////登陆用户对其他用户进行关注或取消关注
+		//apiRouter.POST("/relation/action/", controller.RelationAction)
+		////登陆用户关注的所有用户列表
+		//apiRouter.GET("/relation/follow/list/", controller.FollowList)
+		////所有关注登录用户的粉丝列表
+		//apiRouter.GET("/relation/follower/list/", controller.FollowerList)
 	}
 }

@@ -9,16 +9,17 @@ import (
 )
 
 //创建一个token
-func generateToken(c *gin.Context, username string) (token string, err error) {
+func generateToken(c *gin.Context, username string, id int64) (token string, err error) {
 	// 构造SignKey: 签名和解签名需要使用一个值
 	jwt := middleware.NewJWT()
 	// 构造用户claims信息(负荷)
 	claims := middleware.CustomClaims{
 		Name: username,
+		Id:   id,
 		StandardClaims: jwt2.StandardClaims{
-			NotBefore: time.Now().Unix() - 1000, // 签名生效时间
-			ExpiresAt: time.Now().Unix() + 3600, // 签名过期时间
-			Issuer:    "wxf.top",                // 签名颁发者
+			NotBefore: time.Now().Unix() - 1000,              // 签名生效时间
+			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(), // 签名过期时间
+			Issuer:    "wxf.top",                             // 签名颁发者
 		},
 	}
 	// 根据claims生成token对象

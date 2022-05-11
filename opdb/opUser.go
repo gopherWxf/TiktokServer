@@ -3,6 +3,7 @@ package opdb
 import (
 	"TiktokServer/dfst"
 	"errors"
+	"fmt"
 )
 
 func Register(rr dfst.RegisterRequest) (_ UserInfo, _ error) {
@@ -21,8 +22,8 @@ func Register(rr dfst.RegisterRequest) (_ UserInfo, _ error) {
 	if err != nil {
 		return UserInfo{}, err
 	}
-	userInfo.GetInfo()
-	return userInfo, nil
+	err = userInfo.GetInfo()
+	return userInfo, err
 }
 
 //查看该用户是否在数据库中
@@ -43,6 +44,35 @@ func UserIsExists(name string) bool {
 func (user *UserInfo) Insert() error {
 	return DB.Model(&UserInfo{}).Create(&user).Error
 }
-func (user *UserInfo) GetInfo() {
-	DB.Find(user, "name=? && password=?", user.Name, user.Password)
+func (user *UserInfo) GetInfo() error {
+	result := DB.Find(user, "name=? && password=?", user.Name, user.Password)
+	return result.Error
+}
+func CheckUser(request dfst.LoginRequest) (UserInfo, error) {
+	userInfo := UserInfo{
+		Name:     request.Username,
+		Password: request.Password,
+	}
+	err := userInfo.GetInfo()
+	if err != nil {
+		return UserInfo{}, err
+	}
+	return userInfo, err
+}
+func GetInfo(id int64, name string) (uu *UserInfo, err error) {
+	uu = &UserInfo{}
+	result := DB.Where("id=? && name=?", id, name).Find(uu)
+	fmt.Println(result.Error)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return uu, nil
+}
+func GetInfoForId(id int64) (uu *UserInfo, err error) {
+	uu = &UserInfo{}
+	result := DB.Find(uu, "id=? ", id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return uu, nil
 }

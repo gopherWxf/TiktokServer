@@ -8,6 +8,9 @@ import (
 )
 import "gopkg.in/ini.v1"
 
+var Svr *Server
+var DB *gorm.DB
+
 type DBConfig struct {
 	Host     string `json:"host"`
 	Port     int    `json:"port"`
@@ -15,9 +18,14 @@ type DBConfig struct {
 	Pwd      string `json:"pwd"`
 	Database string `json:"database"`
 }
+type Server struct {
+	IP     string `json:"ip"`
+	Port   string `json:"port"`
+	Public string `json:"public"`
+}
 
 //解析ini文件并反射到结构体中
-func parserConfig(dbCfg *DBConfig) {
+func (dbCfg *DBConfig) parserConfig() {
 	cfg, err := ini.Load("./opdb/config.ini")
 	if err != nil {
 		log.Panicf("Fail to read file: %v\n", err)
@@ -28,19 +36,35 @@ func parserConfig(dbCfg *DBConfig) {
 	dbCfg.Pwd = cfg.Section("DB").Key("pwd").String()
 	dbCfg.Database = cfg.Section("DB").Key("database").String()
 }
+func (svCfg *Server) parserConfig() {
+	cfg, err := ini.Load("./opdb/config.ini")
+	if err != nil {
+		log.Panicf("Fail to read file: %v\n", err)
+	}
+	svCfg.IP = cfg.Section("Server").Key("ip").String()
+	svCfg.Port = cfg.Section("Server").Key("port").String()
+	svCfg.Public = cfg.Section("Server").Key("public").String()
+}
 
 //读取配置文件内容
 func LoadDBConfig() *DBConfig {
 	dbCfg := &DBConfig{}
 	//解析ini文件并反射到结构体中
-	parserConfig(dbCfg)
+	dbCfg.parserConfig()
 	return dbCfg
 }
 
-var DB *gorm.DB
+//读取配置文件内容
+func LoadServerConfig() *Server {
+	Svr = &Server{}
+	//解析ini文件并反射到结构体中
+	Svr.parserConfig()
+	return Svr
+}
 
 //从配置文件中读取数据库的配置信息并连接数据库
 func InitMySqlConn() (err error) {
+	LoadServerConfig()
 	//读取配置文件内容
 	dbCfg := LoadDBConfig()
 	//拼凑连接数据库的语句
