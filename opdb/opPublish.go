@@ -5,10 +5,8 @@ import "errors"
 func InsertVideo(id int64, filename string) error {
 	v := Video{
 		FkViUserinfoId: id,
-		//PlayUrl:        "http://" + Svr.Public + ":" + Svr.Port + "/static/" + filename,
-		//CoverUrl:       "https://profile.csdnimg.cn/1/2/9/1_qq_42956653",
-		PlayUrl:  "http://itaem.cn/test.mp4",
-		CoverUrl: "http://112.74.73.147/1645008588830-c62e8fb48ebedc30c107f184c8dee6b8_1.jpg",
+		PlayUrl:        "http://" + Svr.Public + ":" + Svr.Port + "/static/" + filename,
+		CoverUrl:       "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 	}
 	return v.Insert()
 }
