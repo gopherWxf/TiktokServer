@@ -19,6 +19,7 @@ func Feed(c *gin.Context) {
 		t, _ := strconv.ParseInt(lastTime, 10, 64)
 		lastTime = time.Unix(t, 0).Format("2006-01-02 15:04:05")
 	}
+	fmt.Println(lastTime)
 	videos, err := opdb.FindFeed(lastTime)
 	fmt.Println(videos)
 	if err != nil {
